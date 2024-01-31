@@ -63,10 +63,12 @@ containerTemplate.innerHTML = `
     <div class="selectContainer"><div class="selected"><input type="text" class="search"></input></div><div class="options"><slot></slot></div></div>
     <input id="msFormIds" type="text" value="" />`;
 
-// TODO dispatch ein event som andre script kan lytta på
-// TODO focus() og blur() for å visa og skjula valg
-// TODO label
-// TODO Søkefelt viss > 10 valg?
+// TODO [+] Label-liknande-GUI på vala
+// TODO [ ] Søkefelt mogleg ved bruk av search-atttributt
+// TODO [ ] Dispatch ein event som andre script kan lytta på
+// TODO [ ] Focus() og blur() for å visa og skjula valg
+// TODO [ ] Single eller multi select
+// TODO [ ] Mogleg å bruka input-feltet i ein form
 export class OtSelect extends HTMLElement {
   getValuesString() {
     let returnString = "";
