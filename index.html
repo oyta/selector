@@ -1,24 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiselect</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Multiselect</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </head>
+    <body>
+        <ot-select inputId="tjohei">
+            <ot-option initialValue="1">Adam</ot-option>
+            <ot-option initialValue="2" selected>Bjarne</ot-option>
+            <ot-option initialValue="3">Charlie</ot-option>
+            <ot-option initialValue="4">Kjell</ot-option>
+            <ot-option initialValue="5">Ronny</ot-option>
+            <ot-option initialValue="6">Åge</ot-option>
+            <ot-option initialValue="7">Kjersti</ot-option>
+        </ot-select>
 
-    <multiple-select inputId="tjohei">
-        <ms-option initialValue="1">Adam</ms-option>
-        <ms-option initialValue="2" selected>Bjarne</ms-option>
-        <ms-option initialValue="3">Charlie</ms-option>
-        <ms-option initialValue="4">Kjell</ms-option>
-        <ms-option initialValue="5">Ronny</ms-option>
-        <ms-option initialValue="6">Åge</ms-option>
-        <ms-option initialValue="7">Kjersti</ms-option>
-      </multiple-select>
-
-
-      <script src="script.js"></script>
-</body>
+        <script src="script.js" type="module"></script>
+    </body>
 </html>
