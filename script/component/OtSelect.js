@@ -21,7 +21,7 @@ containerTemplate.innerHTML = `
       width: 100%;
       border: solid 1px #eaeaea;
       border-radius: 5px;
-      height: 40px;
+      min-height: 40px;
     }
     .selected>.option{
       border: solid 1px #e3e3e3;
@@ -47,11 +47,19 @@ containerTemplate.innerHTML = `
       }
     }
 
-    .options {
-      display: block;
+    .optionsWrapper {
+      grid-template-rows: 1fr;
+      display: grid;
       margin: 4px;
       margin-left: 20px
       padding-left: 15px;
+      transition: grid-template-rows 0.5s ease-out;
+    }
+    .optionsWrapper:has(.hidden) {
+      grid-template-rows: 0fr;
+    }
+    .options {
+      overflow: hidden;
     }
 
     .selected>input {
@@ -59,8 +67,22 @@ containerTemplate.innerHTML = `
       border: none;
       font-size: 1rem;
     }
+
+    .collapseToggle {
+      display: inline-block;
+      transform: rotate(180deg);
+      transition:  transform 0.5s;
+      float: right;
+      margin: 6px;
+      color: #ccc;
+    }
+    .collapseToggle.active {
+        transform: rotate(0deg);
+        transition: transform 0.5s;
+    }
+
     </style>
-    <div class="selectContainer"><div class="selected"><input type="text" class="search"></input></div><div class="options"><slot></slot></div></div>
+    <div class="selectContainer"><div class="selected"><input type="text" class="search"></input><span class="collapseToggle active">&#9650;</span></div><div class="optionsWrapper"><div class="options"><slot></slot></div></div></div>
     <input id="msFormIds" type="text" value="" />`;
 
 // TODO [+] Label-liknande-GUI på vala
@@ -69,6 +91,8 @@ containerTemplate.innerHTML = `
 // TODO [ ] Focus() og blur() for å visa og skjula valg
 // TODO [ ] Single eller multi select
 // TODO [ ] Mogleg å bruka input-feltet i ein form
+// TODO [ ] Skal det observerast nokre attributes, nokon stad?
+// TODO [ ] Chevron expand/collapse i enden av selected-options med tilhøyrande action. Søkefelt også flytande/usynleg.
 export class OtSelect extends HTMLElement {
   getValuesString() {
     let returnString = "";
@@ -122,8 +146,10 @@ export class OtSelect extends HTMLElement {
   connectedCallback() {
     const container = document.importNode(containerTemplate.content, true);
     this.shadowRoot?.appendChild(container);
-    const containerElement = this.shadowRoot?.querySelector(".selectContainer");
+    const containerElement = this.getContainer();
     containerElement?.addEventListener("click", this.clickHandler.bind(this));
+    containerElement?.addEventListener("focus", this.onFocus.bind(this));
+    containerElement?.addEventListener("blur", this.onBlur.bind(this));
     const inputElement = this.shadowRoot?.getElementById("msFormIds");
     if (typeof inputElement !== "undefined" && inputElement !== null) {
       inputElement.id = this.getAttribute("inputId") ?? "msFormIds";
@@ -132,8 +158,8 @@ export class OtSelect extends HTMLElement {
       );
     }
     const searchInput = this.shadowRoot?.querySelector("input.search");
-    searchInput.addEventListener("focus", this.onFocus.bind(this));
-    searchInput.addEventListener("blur", this.onBlur.bind(this));
+    searchInput.addEventListener("change", this.onInputChange.bind(this));
+
     this.render();
   }
   static get observedAttributes() {
@@ -145,17 +171,27 @@ export class OtSelect extends HTMLElement {
   disconnectedCallback() {
     console.log("My custom element removed from DOM!");
   }
-  onFocus() {
+  onFocus(event) {
     this.getOptionsContainer().style.display = "block";
+    console.log("focus");
   }
-  onBlur() {
+  onBlur(event) {
     this.getOptionsContainer().style.display = "none";
+    console.log("blur");
+  }
+  onInputChange(event) {
+    console.log("Input changed!");
   }
   clickHandler(event) {
-    const closest = event.target.closest(".option");
-    if (closest !== null) {
-      this.onRemove(closest);
+    const closestOption = event.target.closest(".option");
+    if (closestOption !== null) {
+      this.onRemove(closestOption);
     }
+    const closestToggle = event.target.closest(".collapseToggle");
+    if (closestToggle !== null) {
+      this.toggleCollapse();
+    }
+
     this.render();
   }
   onRemove(element) {
@@ -166,5 +202,17 @@ export class OtSelect extends HTMLElement {
         return;
       }
     });
+  }
+
+  toggleCollapse() {
+    if (this.getOptionsContainer().classList.contains("hidden")) {
+      this.getOptionsContainer().classList.remove("hidden");
+      this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
+    } else {
+      this.getOptionsContainer().classList.add("hidden");
+      this.shadowRoot
+        .querySelector(".collapseToggle")
+        .classList.remove("active");
+    }
   }
 }
