@@ -1,18 +1,32 @@
 export const optionTemplate = document.createElement("template");
 optionTemplate.innerHTML = `<style>
-.option {
-  display: block;
-  margin-bottom: 5px;
-  cursor: pointer;
-  border-radius: 5px;
-  border: solid 1px transparent;
-  padding: 5px;
-  padding-left: 20px;
+  .option {
+      display: grid;
+      grid-template-columns: 20px 20px 1fr 20px;
+      grid-template-rows: auto;
 
-  &:hover {
-    background-color: pink;
+      cursor: pointer;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+
+      &.hidden {
+        display: none;
+      }
+
+      &:hover {
+          background-color: #f3f3f3;
+          border-radius: 0;
+      }
+
+      & :first-child {
+          grid-column: 2 / 3;
+      }
+
+      & :nth-child(2) {
+          grid-column: 3 / 5;
+      }
   }
-}
+
 </style>
 <div class="option" data-value=""></div>`;
 
@@ -28,13 +42,13 @@ export class OtOption extends HTMLElement {
     const option = document.importNode(optionTemplate.content, true);
     const optionElement = option.querySelector(".option");
     if (withCheckmarkSymbol) {
-      optionElement.innerHTML = `${this.isSelected ? "☑" : "☐"} `;
+      optionElement.innerHTML = `<span>${this.isSelected ? "☑" : "☐"}</span>`;
     } else {
       optionElement.innerHTML = ``;
     }
-    optionElement.innerHTML += `${this.label}`;
+    optionElement.innerHTML += `<span>${this.label}</span>`;
     if (withCloseSymbol) {
-      optionElement.innerHTML += ` <span style="color: red;">✖</span>`;
+      optionElement.innerHTML += ` <span>✖</span>`;
     }
     optionElement.dataset.formId = this.formValue;
     return optionElement;
@@ -52,8 +66,12 @@ export class OtOption extends HTMLElement {
   }
   render() {
     const optionElement = this.shadowRoot.querySelector(".option");
-    optionElement.innerHTML = `${this.isSelected ? "☑" : "☐"} ${this.label}`;
-    optionElement.style.display = this.isSelected ? "none" : "block";
+    optionElement.innerHTML = `<span>${this.isSelected ? "☑" : "☐"}</span><span>${this.label}</span>`;
+    if (this.isSelected) {
+      optionElement.classList.add("hidden");
+    } else {
+      optionElement.classList.remove("hidden");
+    }
   }
   clickHandler(event) {
     this.isSelected = !this.isSelected;

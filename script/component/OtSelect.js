@@ -52,7 +52,7 @@ export class OtSelect extends HTMLElement {
     this.getSelectedContainer().innerHTML = "";
   }
   getContainer() {
-    return this.shadowRoot.querySelector(".selectContainer");
+    return this.shadowRoot.querySelector(".container");
   }
   getSelectedContainer() {
     return this.shadowRoot.querySelector(".selected");
