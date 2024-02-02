@@ -1,12 +1,9 @@
 export { OtOption } from "./OtOption.js";
-import * as CssTemplates from "./CssTemplates.js";
-import * as HtmlTemplates from "./HtmlTemplates.js";
+import { otSelectCss } from "../templates/css/OtSelectCss.js";
+import { otSelectHtml } from "../templates/html/OtSelectHtml.js";
 
 const containerTemplate = document.createElement("template");
-containerTemplate.innerHTML = `
-    ${CssTemplates.otSelectCss}
-    ${HtmlTemplates.otSelectHtml}
-    `;
+containerTemplate.innerHTML = `${otSelectCss} ${otSelectHtml}`;
 
 // TODO [+] Label-liknande-GUI på vala
 // TODO [ ] Søkefelt mogleg ved bruk av search-atttributt
