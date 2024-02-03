@@ -89,10 +89,4 @@ export class OtOption extends HTMLElement {
     );
   }
   disconnectedCallback() {}
-  onFocus() {
-    // show options
-  }
-  onBlur() {
-    // hide options
-  }
 }
