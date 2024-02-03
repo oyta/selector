@@ -5,10 +5,10 @@ export const otSelectHtml = `
         <input type="text" class="search"></input>
       </div>
       <div class="optionsToggle">
-          <span class="collapseToggle active">&#9650;</span>
+          <span class="collapseToggle">&#9650;</span>
       </div>
     </div>
-    <div class="options">
+    <div class="options hidden">
         <slot></slot>
     </div>
   </div>
