@@ -93,12 +93,13 @@ export class OtSelect extends HTMLElement {
   }
   clickHandler(event) {
     const closestOption = event.target.closest(".option");
+    const closestToggle = event.target.closest(".collapseToggle");
     if (closestOption !== null) {
       this.onRemove(closestOption);
-    }
-    const closestToggle = event.target.closest(".collapseToggle");
-    if (closestToggle !== null) {
+    } else if (closestToggle !== null) {
       this.toggleCollapse();
+    } else {
+      this.expandOptions();
     }
 
     this.render();
@@ -115,13 +116,17 @@ export class OtSelect extends HTMLElement {
 
   toggleCollapse() {
     if (this.getOptionsContainer().classList.contains("hidden")) {
-      this.getOptionsContainer().classList.remove("hidden");
-      this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
+      this.expandOptions();
     } else {
       this.getOptionsContainer().classList.add("hidden");
       this.shadowRoot
         .querySelector(".collapseToggle")
         .classList.remove("active");
     }
+  }
+
+  expandOptions() {
+    this.getOptionsContainer().classList.remove("hidden");
+    this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
   }
 }
