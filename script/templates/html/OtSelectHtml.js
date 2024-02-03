@@ -2,7 +2,7 @@ export const otSelectHtml = `
   <div class="container">
     <div class="inputContainer">
       <div class="selected">
-        <input type="text" class="search"></input>
+        <input type="text" class="search hidden"></input>
       </div>
       <div class="optionsToggle">
           <span class="collapseToggle">&#9650;</span>

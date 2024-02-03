@@ -59,6 +59,9 @@ export class OtSelect extends HTMLElement {
   getAllOptions() {
     return this.querySelectorAll("ot-option");
   }
+  getSearchInputElement() {
+    return this.shadowRoot.querySelector(".search");
+  }
   connectedCallback() {
     const container = document.importNode(containerTemplate.content, true);
     this.shadowRoot?.appendChild(container);
@@ -100,6 +103,7 @@ export class OtSelect extends HTMLElement {
       this.toggleCollapse();
     } else {
       this.expandOptions();
+      this.focusSearhInput();
     }
 
     this.render();
@@ -117,7 +121,9 @@ export class OtSelect extends HTMLElement {
   toggleCollapse() {
     if (this.getOptionsContainer().classList.contains("hidden")) {
       this.expandOptions();
+      this.focusSearhInput();
     } else {
+      this.getSearchInputElement().classList.add("hidden");
       this.getOptionsContainer().classList.add("hidden");
       this.shadowRoot
         .querySelector(".collapseToggle")
@@ -128,5 +134,14 @@ export class OtSelect extends HTMLElement {
   expandOptions() {
     this.getOptionsContainer().classList.remove("hidden");
     this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
+  }
+
+  focusSearhInput() {
+    this.getSearchInputElement().classList.remove("hidden");
+    this.getSearchInputElement().focus();
+  }
+
+  hideSearchInput() {
+    this.getSearchInputElement().classList.add("hidden");
   }
 }
