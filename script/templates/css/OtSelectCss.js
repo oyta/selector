@@ -49,6 +49,10 @@ export const otSelectCss = `
                       &:focus {
                           outline: none;
                       }
+
+                      &.hidden {
+                        display: none;
+                      }
                   }
 
                   & .option {
@@ -75,7 +79,7 @@ export const otSelectCss = `
                       & > span:nth-of-type(2) {
                           font-family: monospace;
                           font-size: 0.8em;
-                          color: red;
+                          color: gray;
                       }
                   }
               }
@@ -87,7 +91,7 @@ export const otSelectCss = `
                   transition: transform 0.5s;
                   float: right;
                   margin: 6px;
-                  color: #ccc;
+                  color: #666;
               }
 
               & .collapseToggle.active {

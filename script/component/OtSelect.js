@@ -5,33 +5,30 @@ import { otSelectHtml } from "../templates/html/OtSelectHtml.js";
 const containerTemplate = document.createElement("template");
 containerTemplate.innerHTML = `${otSelectCss} ${otSelectHtml}`;
 
-// TODO [+] Label-liknande-GUI på vala
 // TODO [ ] Søkefelt mogleg ved bruk av search-atttributt
-// TODO [ ] Dispatch ein event som andre script kan lytta på
-// TODO [ ] Focus() og blur() for å visa og skjula valg
 // TODO [ ] Single eller multi select
-// TODO [ ] Mogleg å bruka input-feltet i ein form
-// TODO [ ] Skal det observerast nokre attributes, nokon stad?
-// TODO [ ] Chevron expand/collapse i enden av selected-options med tilhøyrande action. Søkefelt også flytande/usynleg.
+// TODO [ ] Input-feltet skal ikkje ligga åleina på ny linja. Kan evt leggjast på ved fokus og elles fjerna.
 export class OtSelect extends HTMLElement {
   static formAssociated = true;
   _internals;
 
-  getValuesString() {
-    let returnString = "";
-    this.getAllOptions().forEach((e, i) => {
-      returnString += e.isSelected ? e.formValue + "," : "";
-    });
-    if (returnString.length > 0) {
-      returnString = returnString.slice(0, -1);
-    }
-    return returnString;
-  }
   constructor() {
     super();
     this._internals = this.attachInternals();
     this.attachShadow({ mode: "open" });
+    this.value_ = "";
+    this._internals.setFormValue(this.value_);
   }
+  get value() {
+    return this.value_;
+  }
+  set value(v) {
+    this.value_ = v;
+  }
+  get form() {
+    return this._internals.form;
+  }
+
   render() {
     const alreadyAdded = [
       ...this.getSelectedContainer().querySelectorAll(".option"),
@@ -46,7 +43,6 @@ export class OtSelect extends HTMLElement {
         addedOption[0].remove();
       }
     });
-    this.getInputElement().value = this.getValuesString();
   }
   clear() {
     this.getSelectedContainer().innerHTML = "";
@@ -60,10 +56,6 @@ export class OtSelect extends HTMLElement {
   getOptionsContainer() {
     return this.shadowRoot.querySelector(".options");
   }
-  getInputElement() {
-    const id = this.getAttribute("inputId") ?? "msFormIds";
-    return this.shadowRoot.querySelector(`#${id}`);
-  }
   getAllOptions() {
     return this.querySelectorAll("ot-option");
   }
@@ -74,13 +66,6 @@ export class OtSelect extends HTMLElement {
     containerElement?.addEventListener("click", this.clickHandler.bind(this));
     containerElement?.addEventListener("focus", this.onFocus.bind(this));
     containerElement?.addEventListener("blur", this.onBlur.bind(this));
-    const inputElement = this.shadowRoot?.getElementById("msFormIds");
-    if (typeof inputElement !== "undefined" && inputElement !== null) {
-      inputElement.id = this.getAttribute("inputId") ?? "msFormIds";
-      inputElement.addEventListener("change", () =>
-        this.dispatchEvent(new Event("customevent")),
-      );
-    }
     const searchInput = this.shadowRoot?.querySelector("input.search");
     searchInput.addEventListener("change", this.onInputChange.bind(this));
 

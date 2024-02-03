@@ -8,15 +8,22 @@
     </head>
 
     <body>
-        <ot-select inputId="tjohei">
-            <ot-option initialValue="1">Adam</ot-option>
-            <ot-option initialValue="2" selected>Bjarne</ot-option>
-            <ot-option initialValue="3">Charlie</ot-option>
-            <ot-option initialValue="4">Kjell</ot-option>
-            <ot-option initialValue="5">Ronny</ot-option>
-            <ot-option initialValue="6">Åge</ot-option>
-            <ot-option initialValue="7">Kjersti</ot-option>
-        </ot-select>
+        <form id="myForm">
+            <ot-select
+                inputId="tjohei"
+                value="tjohei"
+                id="yjohei"
+                name="special"
+            >
+                <ot-option initialValue="1">Adam</ot-option>
+                <ot-option initialValue="2" selected>Bjarne</ot-option>
+                <ot-option initialValue="3">Charlie</ot-option>
+                <ot-option initialValue="4">Kjell</ot-option>
+                <ot-option initialValue="5">Ronny</ot-option>
+                <ot-option initialValue="6">Åge</ot-option>
+                <ot-option initialValue="7">Kjersti</ot-option>
+            </ot-select>
+        </form>
 
         <script src="script.js" type="module"></script>
     </body>

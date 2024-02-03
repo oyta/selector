@@ -12,5 +12,4 @@ export const otSelectHtml = `
         <slot></slot>
     </div>
   </div>
-  <input id="msFormIds" type="text" value="" />
   `;
