@@ -4,7 +4,6 @@ export const otSelectCss = `
   :host  {
         background-color: transparent;
         display: block;
-        padding: 30px;
         max-width: 700px;
       }
 
