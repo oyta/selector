@@ -36,6 +36,7 @@ export class OtOption extends HTMLElement {
   isSelected;
   constructor() {
     super();
+    this.filter = "";
     this.attachShadow({ mode: "open" });
   }
   getHTMLElement(withCheckmarkSymbol = true, withCloseSymbol = false) {
@@ -67,7 +68,7 @@ export class OtOption extends HTMLElement {
   render() {
     const optionElement = this.shadowRoot.querySelector(".option");
     optionElement.innerHTML = `<span>${this.isSelected ? "☑" : "☐"}</span><span>${this.label}</span>`;
-    if (this.isSelected) {
+    if (this.isSelected || this.matchesFilter()) {
       optionElement.classList.add("hidden");
     } else {
       optionElement.classList.remove("hidden");
@@ -89,4 +90,18 @@ export class OtOption extends HTMLElement {
     );
   }
   disconnectedCallback() {}
+
+  set filter(value) {
+    this._filter = value;
+  }
+
+  matchesFilter() {
+    if (this._filter === null || this._filter.length === 0) {
+      return false;
+    }
+    const label = this.label.toLowerCase();
+    const filter = this._filter.toLowerCase();
+
+    return label.indexOf(filter) < 0;
+  }
 }

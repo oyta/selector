@@ -38,7 +38,10 @@ export class OtSelect extends HTMLElement {
         (x) => x.dataset.formId === e.formValue,
       );
       if (e.isSelected && addedOption.length === 0) {
-        this.getSelectedContainer().prepend(e.getHTMLElement(false, true));
+        this.getSelectedContainer().insertBefore(
+          e.getHTMLElement(false, true),
+          this.getSearchInputElement(),
+        );
       } else if (!e.isSelected && addedOption.length === 1) {
         addedOption[0].remove();
       }
@@ -70,7 +73,7 @@ export class OtSelect extends HTMLElement {
     containerElement?.addEventListener("focus", this.onFocus.bind(this));
     containerElement?.addEventListener("blur", this.onBlur.bind(this));
     const searchInput = this.shadowRoot?.querySelector("input.search");
-    searchInput.addEventListener("change", this.onInputChange.bind(this));
+    searchInput.addEventListener("input", this.onInputChange.bind(this));
 
     this.render();
   }
@@ -92,7 +95,11 @@ export class OtSelect extends HTMLElement {
     console.log("blur");
   }
   onInputChange(event) {
-    console.log("Input changed!");
+    this.getAllOptions().forEach((e, i) => {
+      e.filter = event.target.value;
+      e.render();
+      return;
+    });
   }
   clickHandler(event) {
     const closestOption = event.target.closest(".option");
@@ -142,6 +149,7 @@ export class OtSelect extends HTMLElement {
   }
 
   hideSearchInput() {
+    this.getSearchInputElement().value = "";
     this.getSearchInputElement().classList.add("hidden");
   }
 }
