@@ -57,7 +57,7 @@ export const otSelectCss = `
 
                   & .option {
                       border-radius: 5px;
-                      border: solid 1px #888;
+                      border: solid 1px #aaa;
 
                       padding-left: 10px;
                       padding-right: 10px;
@@ -68,7 +68,7 @@ export const otSelectCss = `
                       margin-right: 0.3em;
 
                       color: #666;
-                      background-color: #eee;
+                      background-color: #fafafa;
                       cursor: pointer;
                       font-weight: 600;
 

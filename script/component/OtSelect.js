@@ -7,94 +7,56 @@ containerTemplate.innerHTML = `${otSelectCss} ${otSelectHtml}`;
 
 // TODO [ ] Attributt for single eller multi select
 // TODO [ ] Attributt for searchable list
+// TODO [ ] Clear?
 export class OtSelect extends HTMLElement {
   static formAssociated = true;
   _internals;
 
   constructor() {
     super();
+    this._value = "";
     this._internals = this.attachInternals();
+    this._internals.setFormValue(this._value);
     this.attachShadow({ mode: "open" });
-    this.value_ = "";
-    this._internals.setFormValue(this.value_);
-  }
-  get value() {
-    return this.value_;
-  }
-  set value(v) {
-    this.value_ = v;
-  }
-  get form() {
-    return this._internals.form;
   }
 
   render() {
     const alreadyAdded = [
-      ...this.getSelectedContainer().querySelectorAll(".option"),
+      ...this.selectedContainerElement.querySelectorAll(".option"),
     ];
-    this.getAllOptions().forEach((e, i) => {
+    this.options.forEach((e, i) => {
       const addedOption = alreadyAdded.filter(
         (x) => x.dataset.formId === e.formValue,
       );
       if (e.isSelected && addedOption.length === 0) {
-        this.getSelectedContainer().insertBefore(
+        this.selectedContainerElement.insertBefore(
           e.getHTMLElement(false, true),
-          this.getSearchInputElement(),
+          this.searchInputElement,
         );
       } else if (!e.isSelected && addedOption.length === 1) {
         addedOption[0].remove();
       }
     });
   }
-  clear() {
-    this.getSelectedContainer().innerHTML = "";
-  }
-  getContainer() {
-    return this.shadowRoot.querySelector(".container");
-  }
-  getSelectedContainer() {
-    return this.shadowRoot.querySelector(".selected");
-  }
-  getOptionsContainer() {
-    return this.shadowRoot.querySelector(".options");
-  }
-  getAllOptions() {
-    return this.querySelectorAll("ot-option");
-  }
-  getSearchInputElement() {
-    return this.shadowRoot.querySelector(".search");
-  }
   connectedCallback() {
     const container = document.importNode(containerTemplate.content, true);
     this.shadowRoot?.appendChild(container);
-    const containerElement = this.getContainer();
-    containerElement?.addEventListener("click", this.clickHandler.bind(this));
-    containerElement?.addEventListener("focus", this.onFocus.bind(this));
-    containerElement?.addEventListener("blur", this.onBlur.bind(this));
-    const searchInput = this.shadowRoot?.querySelector("input.search");
-    searchInput.addEventListener("input", this.onInputChange.bind(this));
+    this.containerElement?.addEventListener(
+      "click",
+      this.clickHandler.bind(this),
+    );
+    this.searchInputElement.addEventListener(
+      "input",
+      this.onSearchChange.bind(this),
+    );
 
     this.render();
-  }
-  static get observedAttributes() {
-    return ["demo"];
   }
   attributeChangedCallback(name, oldValue, newValue) {
     console.log("Attribute changed", name, oldValue, newValue);
   }
-  disconnectedCallback() {
-    console.log("My custom element removed from DOM!");
-  }
-  onFocus(event) {
-    this.getOptionsContainer().style.display = "block";
-    console.log("focus");
-  }
-  onBlur(event) {
-    this.getOptionsContainer().style.display = "none";
-    console.log("blur");
-  }
-  onInputChange(event) {
-    this.getAllOptions().forEach((e, i) => {
+  onSearchChange(event) {
+    this.options.forEach((e, i) => {
       e.filter = event.target.value;
       e.render();
       return;
@@ -112,10 +74,11 @@ export class OtSelect extends HTMLElement {
       this.focusSearhInput();
     }
 
+    this.updateValue();
     this.render();
   }
   onRemove(element) {
-    this.getAllOptions().forEach((e, i) => {
+    this.options.forEach((e, i) => {
       if (e.formValue === element.dataset.formId) {
         e.isSelected = false;
         e.render();
@@ -123,32 +86,66 @@ export class OtSelect extends HTMLElement {
       }
     });
   }
-
   toggleCollapse() {
-    if (this.getOptionsContainer().classList.contains("hidden")) {
+    if (this.optionsContainerElement.classList.contains("hidden")) {
       this.expandOptions();
       this.focusSearhInput();
     } else {
-      this.getSearchInputElement().classList.add("hidden");
-      this.getOptionsContainer().classList.add("hidden");
+      this.searchInputElement.classList.add("hidden");
+      this.optionsContainerElement.classList.add("hidden");
       this.shadowRoot
         .querySelector(".collapseToggle")
         .classList.remove("active");
     }
   }
-
   expandOptions() {
-    this.getOptionsContainer().classList.remove("hidden");
+    this.optionsContainerElement.classList.remove("hidden");
     this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
   }
-
   focusSearhInput() {
-    this.getSearchInputElement().classList.remove("hidden");
-    this.getSearchInputElement().focus();
+    this.searchInputElement.classList.remove("hidden");
+    this.searchInputElement.focus();
   }
-
   hideSearchInput() {
-    this.getSearchInputElement().value = "";
-    this.getSearchInputElement().classList.add("hidden");
+    this.searchInputElement.value = "";
+    this.searchInputElement.classList.add("hidden");
+  }
+  updateValue() {
+    const name = this.getAttribute("name");
+    const entries = new FormData();
+    this.options.forEach((e, i) => {
+      if (e.isSelected) {
+        entries.append(`${name}-${i}`, e.formValue);
+      }
+    });
+    this._internals.setFormValue(entries);
+  }
+  static get observedAttributes() {
+    // TODO fjern evt ta i bruk med noko vetigt
+    return ["demo"];
+  }
+  get value() {
+    return this._value;
+  }
+  set value(v) {
+    this._value = v;
+  }
+  get form() {
+    return this._internals.form;
+  }
+  get containerElement() {
+    return this.shadowRoot.querySelector(".container");
+  }
+  get selectedContainerElement() {
+    return this.shadowRoot.querySelector(".selected");
+  }
+  get optionsContainerElement() {
+    return this.shadowRoot.querySelector(".options");
+  }
+  get options() {
+    return this.querySelectorAll("ot-option");
+  }
+  get searchInputElement() {
+    return this.shadowRoot.querySelector(".search");
   }
 }
