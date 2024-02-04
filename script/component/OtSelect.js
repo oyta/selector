@@ -18,6 +18,7 @@ export class OtSelect extends HTMLElement {
     this._internals = this.attachInternals();
     this._internals.setFormValue(this._value);
     this.attachShadow({ mode: "open" });
+    this.updateValue();
   }
 
   render() {
