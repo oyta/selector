@@ -5,9 +5,8 @@ import { otSelectHtml } from "../templates/html/OtSelectHtml.js";
 const containerTemplate = document.createElement("template");
 containerTemplate.innerHTML = `${otSelectCss} ${otSelectHtml}`;
 
-// TODO [ ] Søkefelt mogleg ved bruk av search-atttributt
-// TODO [ ] Single eller multi select
-// TODO [ ] Input-feltet skal ikkje ligga åleina på ny linja. Kan evt leggjast på ved fokus og elles fjerna.
+// TODO [ ] Attributt for single eller multi select
+// TODO [ ] Attributt for searchable list
 export class OtSelect extends HTMLElement {
   static formAssociated = true;
   _internals;

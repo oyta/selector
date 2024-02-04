@@ -57,7 +57,7 @@ export const otSelectCss = `
 
                   & .option {
                       border-radius: 5px;
-                      box-shadow: rgba(34, 36, 38, 0.15) 0px 0px 0px 1px inset;
+                      border: solid 1px #888;
 
                       padding-left: 10px;
                       padding-right: 10px;
@@ -67,13 +67,16 @@ export const otSelectCss = `
                       margin-bottom: 0.4em;
                       margin-right: 0.3em;
 
-                      color: #444;
+                      color: #666;
                       background-color: #eee;
                       cursor: pointer;
                       font-weight: 600;
 
                       &:hover {
-                          background-color: pink;
+                          background-color: #fafafa;
+                          filter: drop-shadow(0 0 0.15rem #ccc);
+                          color: #444;
+                          border-color: #aaa;
                       }
 
                       & > span:nth-of-type(2) {
