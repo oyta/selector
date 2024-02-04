@@ -19,8 +19,28 @@ export class OtSelect extends HTMLElement {
     this._internals.setFormValue(this._value);
     this.attachShadow({ mode: "open" });
     this.updateValue();
+    this.addListeners();
   }
-
+  addListeners() {
+    this.options.forEach((e) =>
+      e.addEventListener("selected", this.optionSelected.bind(this)),
+    );
+  }
+  optionSelected(event) {
+    if (this.getAttribute("search") !== null) {
+      this.searchInputElement.value = "";
+    }
+    if (this.getAttribute("multiple") === null) {
+      this.clear();
+      event.target.isSelected = true;
+    }
+  }
+  clear() {
+    this.options.forEach((e) => {
+      e.isSelected = false;
+      e.render();
+    });
+  }
   render() {
     const alreadyAdded = [
       ...this.selectedContainerElement.querySelectorAll(".option"),
@@ -57,6 +77,9 @@ export class OtSelect extends HTMLElement {
     console.log("Attribute changed", name, oldValue, newValue);
   }
   onSearchChange(event) {
+    if (this.getAttribute("search") === null) {
+      return;
+    }
     this.options.forEach((e, i) => {
       e.filter = event.target.value;
       e.render();
@@ -92,7 +115,9 @@ export class OtSelect extends HTMLElement {
       this.expandOptions();
       this.focusSearhInput();
     } else {
-      this.searchInputElement.classList.add("hidden");
+      if (this.getAttribute("search") !== null) {
+        this.searchInputElement.classList.add("hidden");
+      }
       this.optionsContainerElement.classList.add("hidden");
       this.shadowRoot
         .querySelector(".collapseToggle")
@@ -104,10 +129,16 @@ export class OtSelect extends HTMLElement {
     this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
   }
   focusSearhInput() {
+    if (this.getAttribute("search") === null) {
+      return;
+    }
     this.searchInputElement.classList.remove("hidden");
     this.searchInputElement.focus();
   }
   hideSearchInput() {
+    if (this.getAttribute("search") === null) {
+      return;
+    }
     this.searchInputElement.value = "";
     this.searchInputElement.classList.add("hidden");
   }

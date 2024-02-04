@@ -9,7 +9,41 @@
 
     <body>
         <form id="myForm">
-            <ot-select id="tjohei" name="special">
+            <h4>Not search not multiple</h4>
+            <ot-select id="tjohei0" name="notsearchnotmultiple">
+                <ot-option initialValue="1">Adam</ot-option>
+                <ot-option initialValue="2" selected>Bjarne</ot-option>
+                <ot-option initialValue="3">Charlie</ot-option>
+                <ot-option initialValue="4">Kjell</ot-option>
+                <ot-option initialValue="5">Ronny</ot-option>
+                <ot-option initialValue="6">Åge</ot-option>
+                <ot-option initialValue="7">Kjersti</ot-option>
+            </ot-select>
+
+            <h4>Only search</h4>
+            <ot-select id="tjohei1" name="search" search>
+                <ot-option initialValue="1">Adam</ot-option>
+                <ot-option initialValue="2" selected>Bjarne</ot-option>
+                <ot-option initialValue="3">Charlie</ot-option>
+                <ot-option initialValue="4">Kjell</ot-option>
+                <ot-option initialValue="5">Ronny</ot-option>
+                <ot-option initialValue="6">Åge</ot-option>
+                <ot-option initialValue="7">Kjersti</ot-option>
+            </ot-select>
+
+            <h4>Only mutiple</h4>
+            <ot-select id="tjohei2" name="mulitple" multiple>
+                <ot-option initialValue="1">Adam</ot-option>
+                <ot-option initialValue="2" selected>Bjarne</ot-option>
+                <ot-option initialValue="3">Charlie</ot-option>
+                <ot-option initialValue="4">Kjell</ot-option>
+                <ot-option initialValue="5">Ronny</ot-option>
+                <ot-option initialValue="6">Åge</ot-option>
+                <ot-option initialValue="7">Kjersti</ot-option>
+            </ot-select>
+
+            <h4>Search and multiple</h4>
+            <ot-select id="tjohei3" name="searchandmultiple" search multiple>
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>

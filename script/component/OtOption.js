@@ -76,6 +76,9 @@ export class OtOption extends HTMLElement {
   }
   clickHandler(event) {
     this.isSelected = !this.isSelected;
+    this.dispatchEvent(
+      new Event(`${this.isSelected ? "selected" : "deselected"}`),
+    );
     this.render();
   }
   static get observedAttributes() {
