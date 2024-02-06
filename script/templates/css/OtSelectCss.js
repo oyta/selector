@@ -76,6 +76,13 @@ export const otSelectCss = `
                           filter: drop-shadow(0 0 0.15rem #ccc);
                           color: #444;
                           border-color: #aaa;
+
+                          & > span:nth-of-type(2) {
+                            display: inline-block;
+                            transform: scale(1.4) rotate(180deg);
+                            transition: transform 1.5s;
+                            color: red;
+                          }
                       }
 
                       & > span:nth-of-type(2) {
