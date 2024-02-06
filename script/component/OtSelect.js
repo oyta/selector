@@ -5,9 +5,6 @@ import { otSelectHtml } from "../templates/html/OtSelectHtml.js";
 const containerTemplate = document.createElement("template");
 containerTemplate.innerHTML = `${otSelectCss} ${otSelectHtml}`;
 
-// TODO [ ] Attributt for single eller multi select
-// TODO [ ] Attributt for searchable list
-// TODO [ ] Clear?
 export class OtSelect extends HTMLElement {
   static formAssociated = true;
   _internals;
