@@ -6,7 +6,9 @@ Web development environment used: MacOs Sonoma with Zed editor and Python HTTP-s
 Current State: Work in progress
 
 ### Todos
-[ ] Clear?
-[ ] Keyboard tabbing and choosing
-[ ] Styling to match the page it is used on
-[ ] Validation
+- [x] Attribute: Search. Toggles whether it is possible to do text input to filter the options
+- [ ] Attrbiute: Multiple. Toggles whether it is possible to select one or multiple options
+- [ ] Clear?
+- [ ] Keyboard tabbing and choosing
+- [ ] Styling to match the page it is used on
+- [ ] Validation
