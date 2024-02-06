@@ -146,11 +146,19 @@ export class OtSelect extends HTMLElement {
     this.searchInputElement.classList.add("hidden");
   }
   updateValue() {
+    if (this.getAttribute("multiple") === null) {
+      const selected = [...this.options].filter((x) => x.isSelected);
+      const currentValue = selected.length === 0 ? "" : selected[0].formValue;
+      this._internals.setFormValue(currentValue);
+      return;
+    }
+
     const name = this.getAttribute("name");
     const entries = new FormData();
+    let index = 0;
     this.options.forEach((e, i) => {
       if (e.isSelected) {
-        entries.append(`${name}-${i}`, e.formValue);
+        entries.append(`${name}-${index++}`, e.formValue);
       }
     });
     this._internals.setFormValue(entries);
