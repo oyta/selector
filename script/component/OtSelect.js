@@ -27,12 +27,14 @@ export class OtSelect extends HTMLElement {
     );
   }
   optionSelected(event) {
-    if (this.getAttribute("search") !== null) {
-      this.searchInputElement.value = "";
-    }
     if (this.getAttribute("multiple") === null) {
       this.clear();
       event.target.isSelected = true;
+    }
+
+    if (this.getAttribute("search") !== null) {
+      this.searchInputElement.value = "";
+      this.updateFilter();
     }
   }
   clear() {
@@ -77,11 +79,15 @@ export class OtSelect extends HTMLElement {
     console.log("Attribute changed", name, oldValue, newValue);
   }
   onSearchChange(event) {
+    this.updateFilter();
+  }
+  updateFilter() {
     if (this.getAttribute("search") === null) {
       return;
     }
+
     this.options.forEach((e, i) => {
-      e.filter = event.target.value;
+      e.filter = this.searchInputElement.value;
       e.render();
       return;
     });
