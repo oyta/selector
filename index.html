@@ -9,6 +9,11 @@
 
     <body>
         <form id="myForm">
+            <input
+                type="text"
+                id="regularTextInput"
+                placeholder="Regular text input"
+            />
             <h4>Not search not multiple</h4>
             <ot-select id="tjohei0" name="notsearchnotmultiple">
                 <ot-option initialValue="1">Adam</ot-option>
@@ -21,7 +26,7 @@
             </ot-select>
 
             <h4>Only search</h4>
-            <ot-select id="tjohei1" name="search" search>
+            <ot-select id="tjohei1" name="searchandmultiple" search>
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>
@@ -32,7 +37,7 @@
             </ot-select>
 
             <h4>Only mutiple</h4>
-            <ot-select id="tjohei2" name="mulitple" multiple>
+            <ot-select id="tjohei2" name="notsearchmulitple" multiple>
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>
