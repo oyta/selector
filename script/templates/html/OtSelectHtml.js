@@ -1,5 +1,5 @@
 export const otSelectHtml = `
-  <div class="container">
+  <div class="container" tabindex="0">
     <div class="inputContainer">
       <div class="selected">
         <input type="text" class="search hidden"></input>

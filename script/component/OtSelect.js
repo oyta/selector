@@ -16,9 +16,8 @@ export class OtSelect extends HTMLElement {
     this._internals.setFormValue(this._value);
     this.attachShadow({ mode: "open" });
     this.updateValue();
-    this.addListeners();
   }
-  addListeners() {
+  addOptionListeners() {
     this.options.forEach((e) =>
       e.addEventListener("selected", this.optionSelected.bind(this)),
     );
@@ -61,16 +60,23 @@ export class OtSelect extends HTMLElement {
   connectedCallback() {
     const container = document.importNode(containerTemplate.content, true);
     this.shadowRoot?.appendChild(container);
-    this.containerElement?.addEventListener(
-      "click",
-      this.clickHandler.bind(this),
-    );
-    this.searchInputElement.addEventListener(
-      "input",
-      this.onSearchChange.bind(this),
-    );
+
+    this.addEventListeners([
+      [this.searchInputElement, "input", this.onSearchChange],
+      [this.searchInputElement, "blur", this.blurHandler],
+      [this.containerElement, "blur", this.blurHandler],
+      [this.containerElement, "focus", this.clickHandler],
+      [this.containerElement, "click", this.clickHandler],
+      [this.containerElement, "keydown", this.clickHandler],
+    ]);
+    this.addOptionListeners();
 
     this.render();
+  }
+  addEventListeners(listenerList) {
+    for (const listener of listenerList) {
+      listener[0].addEventListener(listener[1], listener[2].bind(this));
+    }
   }
   attributeChangedCallback(name, oldValue, newValue) {
     console.log("Attribute changed", name, oldValue, newValue);
@@ -88,6 +94,24 @@ export class OtSelect extends HTMLElement {
       e.render();
       return;
     });
+  }
+  blurHandler(event) {
+    if (!event.target.contains(event.relatedTarget)) {
+      this.toggleCollapse();
+    }
+  }
+  keyDownHandler(event) {
+    if (event.isComposing || event.keyCode === 229) {
+      return;
+    }
+    console.log("Key: " + event.keyCode);
+    if (event.keyCode === 40) {
+      // Arrow down
+    } else if (event.keyCode === 38) {
+      // Arrow up
+    } else if (event.keyCode === 8) {
+      // Backspace
+    }
   }
   clickHandler(event) {
     const closestOption = event.target.closest(".option");
