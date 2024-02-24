@@ -14,7 +14,7 @@ export class OtSelect extends HTMLElement {
     this._value = "";
     this._internals = this.attachInternals();
     this._internals.setFormValue(this._value);
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: "open", delegatesFocus: true });
     this.updateValue();
   }
   addOptionListeners() {
@@ -61,16 +61,25 @@ export class OtSelect extends HTMLElement {
     const container = document.importNode(containerTemplate.content, true);
     this.shadowRoot?.appendChild(container);
 
+    if (this.getAttribute("search") === null) {
+      this.containerElement.setAttribute("tabindex", "0");
+      this.searchInputElement.classList.add("hidden");
+      this.addEventListeners([
+        [this.containerElement, "blur", this.blurHandler],
+        [this.containerElement, "focus", this.focusHandler],
+        [this.containerElement, "click", this.clickHandler],
+      ]);
+    } else {
+      this.addEventListeners([
+        [this.searchInputElement, "input", this.onSearchChange],
+        [this.searchInputElement, "blur", this.blurHandler],
+        [this.searchInputElement, "focus", this.focusHandler],
+      ]);
+    }
     this.addEventListeners([
-      [this.searchInputElement, "input", this.onSearchChange],
-      [this.searchInputElement, "blur", this.blurHandler],
-      [this.containerElement, "blur", this.blurHandler],
-      [this.containerElement, "focus", this.clickHandler],
-      [this.containerElement, "click", this.clickHandler],
-      [this.containerElement, "keydown", this.clickHandler],
+      [this.containerElement, "keydown", this.keyDownHandler],
     ]);
     this.addOptionListeners();
-
     this.render();
   }
   addEventListeners(listenerList) {
@@ -95,11 +104,7 @@ export class OtSelect extends HTMLElement {
       return;
     });
   }
-  blurHandler(event) {
-    if (!event.target.contains(event.relatedTarget)) {
-      this.toggleCollapse();
-    }
-  }
+
   keyDownHandler(event) {
     if (event.isComposing || event.keyCode === 229) {
       return;
@@ -111,22 +116,32 @@ export class OtSelect extends HTMLElement {
       // Arrow up
     } else if (event.keyCode === 8) {
       // Backspace
+    } else if (event.keyCode === 13 || event.keyCode == 32) {
+      // Enter
+    } else if (event.keyCode === 27) {
+      // ESC
+      this.blur();
+    } else if (event.keyCode == 34) {
+      // End
+    } else if (event.keyCode == 33) {
+      // Home
     }
   }
   clickHandler(event) {
     const closestOption = event.target.closest(".option");
-    const closestToggle = event.target.closest(".collapseToggle");
     if (closestOption !== null) {
       this.onRemove(closestOption);
-    } else if (closestToggle !== null) {
-      this.toggleCollapse();
-    } else {
-      this.expandOptions();
-      this.focusSearhInput();
+      this.updateValue();
+      this.render();
     }
-
-    this.updateValue();
-    this.render();
+  }
+  blurHandler(event) {
+    if (!event.target.contains(event.relatedTarget)) {
+      this.collapseOptions();
+    }
+  }
+  focusHandler(event) {
+    this.expandOptions();
   }
   onRemove(element) {
     this.options.forEach((e, i) => {
@@ -137,30 +152,21 @@ export class OtSelect extends HTMLElement {
       }
     });
   }
-  toggleCollapse() {
-    if (this.optionsContainerElement.classList.contains("hidden")) {
-      this.expandOptions();
-      this.focusSearhInput();
-    } else {
-      if (this.getAttribute("search") !== null) {
-        this.searchInputElement.classList.add("hidden");
-      }
-      this.optionsContainerElement.classList.add("hidden");
-      this.shadowRoot
-        .querySelector(".collapseToggle")
-        .classList.remove("active");
-    }
-  }
   expandOptions() {
     this.optionsContainerElement.classList.remove("hidden");
     this.shadowRoot.querySelector(".collapseToggle").classList.add("active");
   }
-  focusSearhInput() {
+  collapseOptions() {
+    this.optionsContainerElement.classList.add("hidden");
+    this.shadowRoot.querySelector(".collapseToggle").classList.remove("active");
+  }
+  focusThis() {
     if (this.getAttribute("search") === null) {
-      return;
+      this.focus();
+    } else {
+      this.searchInputElement.classList.remove("hidden");
+      this.searchInputElement.focus();
     }
-    this.searchInputElement.classList.remove("hidden");
-    this.searchInputElement.focus();
   }
   hideSearchInput() {
     if (this.getAttribute("search") === null) {

@@ -97,7 +97,7 @@ export const otSelectCss = `
                   font-size: 0.7rem;
                   display: inline-block;
                   transform: rotate(180deg);
-                  transition: transform 0.5s;
+                  transition: transform 0.5s, color 0.5s;
                   float: right;
                   margin: 6px;
                   color: #666;
@@ -105,7 +105,8 @@ export const otSelectCss = `
 
               & .collapseToggle.active {
                   transform: rotate(0deg);
-                  transition: transform 0.5s;
+                  transition: transform 0.5s, color 0.5s;
+                  color: transparent;
               }
           }
 
