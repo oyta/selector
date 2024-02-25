@@ -33,9 +33,11 @@ export class OtSelect extends HTMLElement {
       this.updateFilter();
     }
 
+    this.updateValue();
     this.render();
   }
   optionDeselected(event) {
+    this.updateValue();
     this.render();
   }
   clear(exceptionList) {
@@ -74,7 +76,6 @@ export class OtSelect extends HTMLElement {
       this.addEventListeners([
         [this.containerElement, "blur", this.blurHandler],
         [this.containerElement, "focus", this.focusHandler],
-        [this.containerElement, "click", this.clickHandler],
       ]);
     } else {
       this.addEventListeners([
@@ -84,6 +85,7 @@ export class OtSelect extends HTMLElement {
       ]);
     }
     this.addEventListeners([
+      [this.containerElement, "click", this.clickHandler],
       [this.containerElement, "keydown", this.keyDownHandler],
     ]);
     this.addOptionListeners();
@@ -162,8 +164,6 @@ export class OtSelect extends HTMLElement {
     if (closestOption !== null) {
       this.onRemove(closestOption);
     }
-    this.updateValue();
-    this.render();
   }
   blurHandler(event) {
     if (!event.target.contains(event.relatedTarget)) {
@@ -177,7 +177,6 @@ export class OtSelect extends HTMLElement {
     this.options.forEach((e, i) => {
       if (e.formValue === element.dataset.formId) {
         e.isSelected = false;
-        e.render();
         return;
       }
     });
