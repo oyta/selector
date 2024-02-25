@@ -38,7 +38,6 @@ optionTemplate.innerHTML = `<style>
 export class OtOption extends HTMLElement {
   label;
   formValue;
-  isSelected;
   constructor() {
     super();
     this.filter = "";
@@ -61,14 +60,13 @@ export class OtOption extends HTMLElement {
     return optionElement;
   }
   connectedCallback() {
-    const isSelected = this.getAttribute("selected") !== null;
     this.formValue = this.getAttribute("initialValue") ?? "";
     this.label = this.innerHTML;
-    this.isSelected = isSelected;
     const option = document.importNode(optionTemplate.content, true);
     this.shadowRoot.appendChild(option);
     const optionElement = this.shadowRoot.querySelector(".option");
     optionElement.addEventListener("click", this.clickHandler.bind(this));
+    this.isSelected = this.getAttribute("selected") !== null;
     this.render();
   }
   render() {
@@ -87,10 +85,6 @@ export class OtOption extends HTMLElement {
   }
   clickHandler(event) {
     this.isSelected = !this.isSelected;
-    this.dispatchEvent(
-      new Event(`${this.isSelected ? "selected" : "deselected"}`),
-    );
-    this.render();
   }
   static get observedAttributes() {
     return ["isSelected"];
@@ -116,7 +110,19 @@ export class OtOption extends HTMLElement {
     this._active = value;
     this.render();
   }
-
+  get isSelected() {
+    return this._selected;
+  }
+  set isSelected(value) {
+    if (this._selected === value) {
+      return;
+    }
+    this._selected = value;
+    this.dispatchEvent(
+      new Event(`${this.isSelected ? "selected" : "deselected"}`),
+    );
+    this.render();
+  }
   matchesFilter() {
     if (this._filter === null || this._filter.length === 0) {
       return true;

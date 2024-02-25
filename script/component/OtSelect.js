@@ -18,14 +18,14 @@ export class OtSelect extends HTMLElement {
     this.updateValue();
   }
   addOptionListeners() {
-    this.options.forEach((e) =>
-      e.addEventListener("selected", this.optionSelected.bind(this)),
-    );
+    this.options.forEach((e) => {
+      e.addEventListener("selected", this.optionSelected.bind(this));
+      e.addEventListener("deselected", this.optionDeselected.bind(this));
+    });
   }
   optionSelected(event) {
     if (this.getAttribute("multiple") === null) {
-      this.clear();
-      event.target.isSelected = true;
+      this.clear([event.target]);
     }
 
     if (this.getAttribute("search") !== null) {
@@ -35,11 +35,15 @@ export class OtSelect extends HTMLElement {
 
     this.render();
   }
-  clear() {
+  optionDeselected(event) {
+    this.render();
+  }
+  clear(exceptionList) {
     this.options.forEach((e) => {
-      e.isSelected = false;
-      e.isActive = false;
-      e.render();
+      if (!exceptionList.includes(e)) {
+        e.isSelected = false;
+        e.isActive = false;
+      }
     });
   }
   render() {
@@ -112,7 +116,6 @@ export class OtSelect extends HTMLElement {
     if (event.isComposing || event.keyCode === 229) {
       return;
     }
-    console.log("Key: " + event.keyCode);
     if (event.keyCode === 40) {
       // Arrow down
       const options = this.availableOptions([...this.options]);
@@ -133,13 +136,18 @@ export class OtSelect extends HTMLElement {
       nextOption.isActive = true;
     } else if (event.keyCode === 8) {
       // Backspace
+      const formId = [
+        ...this.selectedContainerElement.querySelectorAll(".option"),
+      ].reverse()[0].dataset.formId;
+      [...this.options][formId - 1].isSelected = false;
     } else if (event.keyCode === 13 || event.keyCode == 32) {
       // Enter
       const option = [...this.options].filter((x) => x.isActive)[0];
+      if (typeof option === "undefined" || option === null) {
+        return;
+      }
       option.isActive = false;
       option.isSelected = true;
-      this.updateValue();
-      this.render();
     } else if (event.keyCode === 27) {
       // ESC
       this.blur();
@@ -175,7 +183,7 @@ export class OtSelect extends HTMLElement {
     });
   }
   availableOptions(options) {
-    let currentIndex = 0;
+    let currentIndex = -1;
     options.forEach((e, i) => {
       if (e.isActive) {
         e.isActive = false;
