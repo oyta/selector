@@ -32,10 +32,13 @@ export class OtSelect extends HTMLElement {
       this.searchInputElement.value = "";
       this.updateFilter();
     }
+
+    this.render();
   }
   clear() {
     this.options.forEach((e) => {
       e.isSelected = false;
+      e.isActive = false;
       e.render();
     });
   }
@@ -112,12 +115,31 @@ export class OtSelect extends HTMLElement {
     console.log("Key: " + event.keyCode);
     if (event.keyCode === 40) {
       // Arrow down
+      const options = this.availableOptions([...this.options]);
+      const nextOption = this.next([...options].filter((x) => !x.isSelected));
+      if (nextOption === null) {
+        return;
+      }
+      this.scrollToOption(nextOption);
+      nextOption.isActive = true;
     } else if (event.keyCode === 38) {
       // Arrow up
+      const options = this.availableOptions([...this.options].reverse());
+      const nextOption = this.next([...options].filter((x) => !x.isSelected));
+      if (nextOption === null) {
+        return;
+      }
+      this.scrollToOption(nextOption);
+      nextOption.isActive = true;
     } else if (event.keyCode === 8) {
       // Backspace
     } else if (event.keyCode === 13 || event.keyCode == 32) {
       // Enter
+      const option = [...this.options].filter((x) => x.isActive)[0];
+      option.isActive = false;
+      option.isSelected = true;
+      this.updateValue();
+      this.render();
     } else if (event.keyCode === 27) {
       // ESC
       this.blur();
@@ -131,9 +153,9 @@ export class OtSelect extends HTMLElement {
     const closestOption = event.target.closest(".option");
     if (closestOption !== null) {
       this.onRemove(closestOption);
-      this.updateValue();
-      this.render();
     }
+    this.updateValue();
+    this.render();
   }
   blurHandler(event) {
     if (!event.target.contains(event.relatedTarget)) {
@@ -151,6 +173,29 @@ export class OtSelect extends HTMLElement {
         return;
       }
     });
+  }
+  availableOptions(options) {
+    let currentIndex = 0;
+    options.forEach((e, i) => {
+      if (e.isActive) {
+        e.isActive = false;
+        currentIndex = i;
+      }
+    });
+    return [...options].slice(currentIndex + 1);
+  }
+  next(elements) {
+    if (typeof elements === "undefined" || elements === null) {
+      return null;
+    }
+    if (elements.length === 0) {
+      return null;
+    }
+    return elements[0];
+  }
+  scrollToOption(option) {
+    const topPos = option.offsetTop - this.optionsContainerElement.offsetTop;
+    this.optionsContainerElement.scrollTop = topPos;
   }
   expandOptions() {
     this.optionsContainerElement.classList.remove("hidden");

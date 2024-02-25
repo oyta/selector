@@ -18,6 +18,11 @@ optionTemplate.innerHTML = `<style>
           border-radius: 0;
       }
 
+      &.active {
+          background-color: #f3f3f3;
+          border-radius: 0;
+      }
+
       & :first-child {
           grid-column: 2 / 3;
       }
@@ -37,6 +42,7 @@ export class OtOption extends HTMLElement {
   constructor() {
     super();
     this.filter = "";
+    this._active = false;
     this.attachShadow({ mode: "open" });
   }
   getHTMLElement(withCheckmarkSymbol = true, withCloseSymbol = false) {
@@ -73,6 +79,11 @@ export class OtOption extends HTMLElement {
     } else {
       optionElement.classList.remove("hidden");
     }
+    if (this.isActive) {
+      optionElement.classList.add("active");
+    } else {
+      optionElement.classList.remove("active");
+    }
   }
   clickHandler(event) {
     this.isSelected = !this.isSelected;
@@ -96,6 +107,14 @@ export class OtOption extends HTMLElement {
 
   set filter(value) {
     this._filter = value;
+  }
+
+  get isActive() {
+    return this._active;
+  }
+  set isActive(value) {
+    this._active = value;
+    this.render();
   }
 
   matchesFilter() {
