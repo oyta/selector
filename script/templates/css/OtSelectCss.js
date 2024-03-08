@@ -21,6 +21,14 @@ export const otSelectCss = `
           font-size: 1em;
           font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
 
+          &:invalid {
+            border: solid 1px red;
+          }
+
+          &:focus {
+            border: solid 1px green;
+          }
+
           & .inputContainer {
               display: grid;
               grid-column: 1 / 5;

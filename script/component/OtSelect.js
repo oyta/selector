@@ -11,11 +11,10 @@ export class OtSelect extends HTMLElement {
 
   constructor() {
     super();
-    this._value = "";
+
     this._internals = this.attachInternals();
-    this._internals.setFormValue(this._value);
-    this.attachShadow({ mode: "open", delegatesFocus: true });
-    this.updateValue();
+    this.value = "";
+    this.attachShadow({ mode: "open", delegatesFocus: false });
   }
   addOptionListeners() {
     this.options.forEach((e) => {
@@ -69,25 +68,20 @@ export class OtSelect extends HTMLElement {
   connectedCallback() {
     const container = document.importNode(containerTemplate.content, true);
     this.shadowRoot?.appendChild(container);
-
     if (this.getAttribute("search") === null) {
-      this.containerElement.setAttribute("tabindex", "0");
       this.searchInputElement.classList.add("hidden");
-      this.addEventListeners([
-        [this.containerElement, "blur", this.blurHandler],
-        [this.containerElement, "focus", this.focusHandler],
-      ]);
     } else {
       this.addEventListeners([
         [this.searchInputElement, "input", this.onSearchChange],
-        [this.searchInputElement, "blur", this.blurHandler],
-        [this.searchInputElement, "focus", this.focusHandler],
       ]);
     }
     this.addEventListeners([
       [this.containerElement, "click", this.clickHandler],
       [this.containerElement, "keydown", this.keyDownHandler],
+      [this, "focus", this.focusHandler],
+      [this, "blur", this.blurHandler],
     ]);
+    this.updateValue();
     this.addOptionListeners();
     this.render();
   }
@@ -138,9 +132,15 @@ export class OtSelect extends HTMLElement {
       nextOption.isActive = true;
     } else if (event.keyCode === 8) {
       // Backspace
-      const formId = [
-        ...this.selectedContainerElement.querySelectorAll(".option"),
-      ].reverse()[0].dataset.formId;
+      const chosenOptions =
+        this.selectedContainerElement.querySelectorAll(".option");
+      if (
+        chosenOptions.length === 0 ||
+        this.searchInputElement.value.length > 0
+      ) {
+        return;
+      }
+      const formId = [...chosenOptions].reverse()[0].dataset.formId;
       [...this.options][formId - 1].isSelected = false;
     } else if (event.keyCode === 13 || event.keyCode == 32) {
       // Enter
@@ -160,18 +160,25 @@ export class OtSelect extends HTMLElement {
     }
   }
   clickHandler(event) {
-    const closestOption = event.target.closest(".option");
-    if (closestOption !== null) {
+    if (event.target.closest(".option") !== null) {
       this.onRemove(closestOption);
+    }
+
+    if (
+      event.target.closest(".inputContainer") !== null &&
+      this.hasAttribute("search")
+    ) {
+      this.searchInputElement.focus();
     }
   }
   blurHandler(event) {
-    if (!event.target.contains(event.relatedTarget)) {
-      this.collapseOptions();
-    }
+    this.collapseOptions();
   }
   focusHandler(event) {
     this.expandOptions();
+    if (this.hasAttribute("search")) {
+      this.searchInputElement.focus();
+    }
   }
   onRemove(element) {
     this.options.forEach((e, i) => {
@@ -231,7 +238,7 @@ export class OtSelect extends HTMLElement {
     if (this.getAttribute("multiple") === null) {
       const selected = [...this.options].filter((x) => x.isSelected);
       const currentValue = selected.length === 0 ? "" : selected[0].formValue;
-      this._internals.setFormValue(currentValue);
+      this.value = currentValue;
       return;
     }
 
@@ -243,8 +250,26 @@ export class OtSelect extends HTMLElement {
         entries.append(`${name}-${index++}`, e.formValue);
       }
     });
-    this._internals.setFormValue(entries);
+    this.value = entries;
+
+    this.onUpdateValue();
   }
+
+  onUpdateValue() {
+    if (
+      !this.matches(":disabled") &&
+      this.hasAttribute("required") &&
+      this._value.length === 0
+    ) {
+      this._internals.setValidity(
+        { customError: true },
+        "Feltet er påkrevd. Vennligst velg verdi(er).",
+      );
+    } else {
+      this._internals.setValidity({});
+    }
+  }
+
   static get observedAttributes() {
     // TODO fjern evt ta i bruk med noko vetigt
     return ["demo"];
@@ -254,10 +279,34 @@ export class OtSelect extends HTMLElement {
   }
   set value(v) {
     this._value = v;
+    this._internals.setFormValue(v);
   }
   get form() {
     return this._internals.form;
   }
+  get name() {
+    return this.getAttribute("name");
+  }
+  get type() {
+    return this.localName;
+  }
+  get validity() {
+    return this.internals_.validity;
+  }
+  get validationMessage() {
+    return this.internals_.validationMessage;
+  }
+  get willValidate() {
+    return this.internals_.willValidate;
+  }
+
+  checkValidity() {
+    return this.internals_.checkValidity();
+  }
+  reportValidity() {
+    return this.internals_.reportValidity();
+  }
+
   get containerElement() {
     return this.shadowRoot.querySelector(".container");
   }

@@ -13,9 +13,15 @@
                 type="text"
                 id="regularTextInput"
                 placeholder="Regular text input"
+                required
             />
             <h4>Not search not multiple</h4>
-            <ot-select id="tjohei0" name="notsearchnotmultiple">
+            <ot-select
+                id="tjohei0"
+                name="notsearchnotmultiple"
+                required
+                tabindex="0"
+            >
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>
@@ -26,7 +32,13 @@
             </ot-select>
 
             <h4>Only search</h4>
-            <ot-select id="tjohei1" name="searchandnotmultiple" search>
+            <ot-select
+                id="tjohei1"
+                name="searchandnotmultiple"
+                search
+                required
+                tabindex="0"
+            >
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>
@@ -37,7 +49,13 @@
             </ot-select>
 
             <h4>Only mutiple</h4>
-            <ot-select id="tjohei2" name="notsearchmulitple" multiple>
+            <ot-select
+                id="tjohei2"
+                name="notsearchmulitple"
+                multiple
+                required
+                tabindex="0"
+            >
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>
@@ -48,7 +66,14 @@
             </ot-select>
 
             <h4>Search and multiple</h4>
-            <ot-select id="tjohei3" name="searchandmultiple" search multiple>
+            <ot-select
+                id="tjohei3"
+                name="searchandmultiple"
+                search
+                multiple
+                required
+                tabindex="0"
+            >
                 <ot-option initialValue="1">Adam</ot-option>
                 <ot-option initialValue="2" selected>Bjarne</ot-option>
                 <ot-option initialValue="3">Charlie</ot-option>
@@ -57,6 +82,8 @@
                 <ot-option initialValue="6">Åge</ot-option>
                 <ot-option initialValue="7">Kjersti</ot-option>
             </ot-select>
+
+            <button>Send inn</button>
         </form>
 
         <script src="script.js" type="module"></script>
