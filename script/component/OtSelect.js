@@ -160,8 +160,10 @@ export class OtSelect extends HTMLElement {
     }
   }
   clickHandler(event) {
-    if (event.target.closest(".option") !== null) {
+    const closestOption = event.target.closest(".option");
+    if (closestOption !== null) {
       this.onRemove(closestOption);
+      this.updateValue();
     }
 
     if (
@@ -239,27 +241,32 @@ export class OtSelect extends HTMLElement {
       const selected = [...this.options].filter((x) => x.isSelected);
       const currentValue = selected.length === 0 ? "" : selected[0].formValue;
       this.value = currentValue;
-      return;
+    } else {
+      const name = this.getAttribute("name");
+      const entries = new FormData();
+      let index = 0;
+      this.options.forEach((e, i) => {
+        if (e.isSelected) {
+          entries.append(`${name}-${index++}`, e.formValue);
+        }
+      });
+      this.value = entries;
     }
-
-    const name = this.getAttribute("name");
-    const entries = new FormData();
-    let index = 0;
-    this.options.forEach((e, i) => {
-      if (e.isSelected) {
-        entries.append(`${name}-${index++}`, e.formValue);
-      }
-    });
-    this.value = entries;
-
     this.onUpdateValue();
   }
 
+  hasValue() {
+    if (this.hasAttribute("multiple")) {
+      return !this.value.entries().next().done;
+    } else {
+      return this.value.length > 0;
+    }
+  }
   onUpdateValue() {
     if (
       !this.matches(":disabled") &&
       this.hasAttribute("required") &&
-      this._value.length === 0
+      !this.hasValue()
     ) {
       this._internals.setValidity(
         { customError: true },
