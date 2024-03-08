@@ -78,6 +78,14 @@ export const otSelectCss = `
                       background-color: #fafafa;
                       cursor: pointer;
                       font-weight: 600;
+                      opacity: 1;
+
+                      transition: opacity 600ms;
+                      transfer-timing-function: cubic-bezier(.33,-0.18,0,1.07);
+
+                      &.notVisible {
+                        opacity: 0;
+                      }
 
                       &:hover {
                           background-color: #fafafa;

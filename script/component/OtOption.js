@@ -44,7 +44,11 @@ export class OtOption extends HTMLElement {
     this._active = false;
     this.attachShadow({ mode: "open" });
   }
-  getHTMLElement(withCheckmarkSymbol = true, withCloseSymbol = false) {
+  getHTMLElement(
+    withCheckmarkSymbol = true,
+    withCloseSymbol = false,
+    classes = [],
+  ) {
     const option = document.importNode(optionTemplate.content, true);
     const optionElement = option.querySelector(".option");
     if (withCheckmarkSymbol) {
@@ -57,6 +61,7 @@ export class OtOption extends HTMLElement {
       optionElement.innerHTML += ` <span>✖</span>`;
     }
     optionElement.dataset.formId = this.formValue;
+    optionElement.classList.add(...classes);
     return optionElement;
   }
   connectedCallback() {

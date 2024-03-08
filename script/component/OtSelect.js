@@ -57,9 +57,14 @@ export class OtSelect extends HTMLElement {
       );
       if (e.isSelected && addedOption.length === 0) {
         this.selectedContainerElement.insertBefore(
-          e.getHTMLElement(false, true),
+          e.getHTMLElement(false, true, ["notVisible"]),
           this.searchInputElement,
         );
+        requestAnimationFrame(() => {
+          this.selectedContainerElement
+            .querySelector(".notVisible")
+            ?.classList.remove("notVisible");
+        });
       } else if (!e.isSelected && addedOption.length === 1) {
         addedOption[0].remove();
       }
