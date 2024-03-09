@@ -81,6 +81,7 @@ export class OtSelect extends HTMLElement {
       ]);
     }
     this.addEventListeners([
+      [this.selectedContainerElement, "click", this.clickHandler],
       [this, "click", this.clickHandler],
       [this, "keydown", this.keyDownHandler],
       [this, "focus", this.focusHandler],
